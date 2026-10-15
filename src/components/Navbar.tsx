@@ -149,7 +149,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setActiveTab('pantry')}
             className={`px-3 py-1.5 whitespace-nowrap ${activeTab === 'pantry' ? 'text-emerald-600 font-semibold' : ''}`}
           >
-            Pantry
+            Pantry & Zero-Waste
           </button>
           <button
             onClick={onOpenMealDb}

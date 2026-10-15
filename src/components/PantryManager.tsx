@@ -66,7 +66,7 @@ export const PantryManager: React.FC<PantryManagerProps> = ({
                 <Leaf className="w-5 h-5" />
               </span>
               <h2 className="text-xl font-bold text-neutral-900">
-                Pantry Inventory & Waste Reduction Engine
+                Pantry & Zero-Waste Engine
               </h2>
             </div>
             <p className="text-xs text-neutral-500 mt-1.5 max-w-2xl leading-relaxed">

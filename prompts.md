@@ -104,3 +104,14 @@ This document records the prompts and instructions used during the development o
 - Synced codebase with remote `coniec` branch on `https://github.com/kittokurrency/Weekly-Meal-Planner.git`.
 - Pushed all application updates, assets, serverless connections, and documentation.
 
+---
+
+## Prompt 8: Navigation Label Standardization
+
+**User Request:**
+> replace "Budget & Waste" with "Pantry & Zero-Waste"
+
+**Actions Taken:**
+- Standardized navigation labels, mobile tab bar, footer links, and section titles to "Pantry & Zero-Waste".
+
+

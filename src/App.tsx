@@ -351,7 +351,7 @@ export default function App() {
               Smart Cart
             </button>
             <button onClick={() => setActiveTab('pantry')} className="hover:text-neutral-900 transition-colors">
-              Pantry Inventory
+              Pantry & Zero-Waste
             </button>
             <button onClick={() => setActiveTab('canvas')} className="hover:text-neutral-900 transition-colors">
               Canvas Specs
