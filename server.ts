@@ -445,6 +445,195 @@ ${recipeText}
   }
 });
 
+// Helper functions to parse TheMealDB measure and classify aisle
+function parseMealMeasure(measure: string | null | undefined): { quantity: number; unit: string } {
+  if (!measure || !measure.trim()) return { quantity: 1, unit: 'portion' };
+  const trimmed = measure.trim();
+  const match = trimmed.match(/^([\d\s\/\.\-]+)\s*([a-zA-Z]+)?/);
+  if (match) {
+    const numStr = match[1].trim();
+    const unit = match[2] ? match[2].trim().toLowerCase() : '';
+    let qty = 1;
+    if (numStr.includes('/')) {
+      const parts = numStr.split('/');
+      qty = (parseFloat(parts[0]) || 1) / (parseFloat(parts[1]) || 1);
+    } else {
+      qty = parseFloat(numStr) || 1;
+    }
+    return { quantity: Math.round(qty * 10) / 10, unit: unit || 'item' };
+  }
+  return { quantity: 1, unit: trimmed };
+}
+
+function classifyAisleAndStaple(ingredientName: string): { aisle: string; isPantryStaple: boolean; estimatedPrice: number } {
+  const name = ingredientName.toLowerCase();
+  if (
+    name.includes('chicken') ||
+    name.includes('beef') ||
+    name.includes('pork') ||
+    name.includes('salmon') ||
+    name.includes('prawn') ||
+    name.includes('bacon') ||
+    name.includes('fish') ||
+    name.includes('fillet') ||
+    name.includes('meat')
+  ) {
+    return { aisle: 'Meat & Seafood', isPantryStaple: false, estimatedPrice: 6.80 };
+  }
+  if (
+    name.includes('cheese') ||
+    name.includes('butter') ||
+    name.includes('milk') ||
+    name.includes('cream') ||
+    name.includes('feta') ||
+    name.includes('yogurt') ||
+    name.includes('tofu') ||
+    name.includes('egg')
+  ) {
+    return { aisle: 'Dairy & Chilled', isPantryStaple: name.includes('butter') || name.includes('egg'), estimatedPrice: 2.80 };
+  }
+  if (
+    name.includes('quinoa') ||
+    name.includes('rice') ||
+    name.includes('pasta') ||
+    name.includes('flour') ||
+    name.includes('chickpea') ||
+    name.includes('couscous') ||
+    name.includes('noodle') ||
+    name.includes('lentil') ||
+    name.includes('bread')
+  ) {
+    return { aisle: 'Pantry & Grains', isPantryStaple: true, estimatedPrice: 1.90 };
+  }
+  if (
+    name.includes('oil') ||
+    name.includes('salt') ||
+    name.includes('pepper') ||
+    name.includes('sauce') ||
+    name.includes('vinegar') ||
+    name.includes('sugar') ||
+    name.includes('paste') ||
+    name.includes('honey') ||
+    name.includes('mustard') ||
+    name.includes('cumin') ||
+    name.includes('oregano') ||
+    name.includes('paprika') ||
+    name.includes('chili') ||
+    name.includes('curry') ||
+    name.includes('dressing')
+  ) {
+    return { aisle: 'Pantry & Condiments', isPantryStaple: true, estimatedPrice: 1.20 };
+  }
+  return { aisle: 'Fresh Produce', isPantryStaple: name.includes('garlic') || name.includes('onion'), estimatedPrice: 1.50 };
+}
+
+// GET /api/meals/filter: Serverless proxy to TheMealDB keyless API (filters by chicken_breast or custom ingredient)
+app.get('/api/meals/filter', async (req, res) => {
+  try {
+    const ingredient = (req.query.i as string) || 'chicken_breast';
+    const targetUrl = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(ingredient)}`;
+    
+    const response = await fetch(targetUrl);
+    if (!response.ok) {
+      throw new Error(`TheMealDB API returned status ${response.status}`);
+    }
+
+    const data = await response.json();
+    res.json({
+      success: true,
+      sourceUrl: targetUrl,
+      ingredient,
+      meals: data.meals || []
+    });
+  } catch (err: any) {
+    console.error('Error fetching from TheMealDB filter:', err);
+    res.status(500).json({
+      success: false,
+      error: err.message || 'Failed to fetch meals from TheMealDB'
+    });
+  }
+});
+
+// GET /api/meals/detail/:id: Fetches full meal details and normalizes into PrepCart Recipe
+app.get('/api/meals/detail/:id', async (req, res) => {
+  try {
+    const mealId = req.params.id;
+    const targetUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${encodeURIComponent(mealId)}`;
+    
+    const response = await fetch(targetUrl);
+    if (!response.ok) {
+      throw new Error(`TheMealDB lookup returned status ${response.status}`);
+    }
+
+    const data = await response.json();
+    const rawMeal = data.meals?.[0];
+    if (!rawMeal) {
+      return res.status(404).json({ error: 'Meal not found in TheMealDB' });
+    }
+
+    // Extract ingredients & measures from strIngredient1..20 and strMeasure1..20
+    const ingredients: any[] = [];
+    for (let i = 1; i <= 20; i++) {
+      const ingName = rawMeal[`strIngredient${i}`];
+      const measure = rawMeal[`strMeasure${i}`];
+      if (ingName && ingName.trim()) {
+        const { quantity, unit } = parseMealMeasure(measure);
+        const { aisle, isPantryStaple, estimatedPrice } = classifyAisleAndStaple(ingName.trim());
+        ingredients.push({
+          name: ingName.trim(),
+          quantity,
+          unit,
+          aisle,
+          estimatedPrice,
+          isPantryStaple
+        });
+      }
+    }
+
+    // Split instructions into digestible steps
+    const rawInstructions: string = rawMeal.strInstructions || '';
+    const instructionSteps = rawInstructions
+      .split(/\r?\n/)
+      .map(s => s.trim())
+      .filter(s => s.length > 10 && !s.toLowerCase().startsWith('step'));
+
+    const instructions = instructionSteps.length > 0
+      ? instructionSteps
+      : ['Follow standard culinary preparation for ' + rawMeal.strMeal];
+
+    const normalizedRecipe = {
+      id: 'themealdb-' + rawMeal.idMeal,
+      title: rawMeal.strMeal,
+      description: `${rawMeal.strArea || rawMeal.strCountry || 'International'} style ${rawMeal.strCategory || 'dish'} from TheMealDB open culinary catalog.`,
+      prepTimeMins: 15,
+      cookTimeMins: 20,
+      servings: 2,
+      cuisine: rawMeal.strArea || rawMeal.strCountry || 'International',
+      dietaryTags: [rawMeal.strCategory || 'Fresh Meal', 'TheMealDB Live'],
+      image: rawMeal.strMealThumb || '/src/assets/images/recipe_salmon_bowl_1792051827374.jpg',
+      nutritionPerServing: {
+        calories: 520,
+        protein: 42,
+        carbs: 38,
+        fat: 18
+      },
+      ingredients,
+      instructions,
+      source: 'themealdb',
+      externalUrl: rawMeal.strSource || rawMeal.strYoutube || null
+    };
+
+    res.json({
+      success: true,
+      recipe: normalizedRecipe
+    });
+  } catch (err: any) {
+    console.error('Error in /api/meals/detail:', err);
+    res.status(500).json({ error: err.message || 'Failed to fetch meal details' });
+  }
+});
+
+
 // Start server with Vite middleware in dev or static files in prod
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {

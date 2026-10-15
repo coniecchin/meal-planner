@@ -7,6 +7,7 @@ import { CanvasInsightsModal } from './components/CanvasInsightsModal';
 import { RecipeUploadModal } from './components/RecipeUploadModal';
 import { PreferencesModal } from './components/PreferencesModal';
 import { PartnerCheckoutModal } from './components/PartnerCheckoutModal';
+import { MealDbExplorerModal } from './components/MealDbExplorerModal';
 import { GROCERY_PARTNERS, INITIAL_PANTRY, INITIAL_RECIPES } from './data/initialData';
 import { Recipe, PantryItem, UserPreferences, ConsolidatedCartItem } from './types';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
@@ -30,6 +31,7 @@ export default function App() {
 
   // Modal states
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [isMealDbOpen, setIsMealDbOpen] = useState(false);
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -241,6 +243,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         cartItemCount={consolidatedCart.filter(i => !i.coveredByPantry).length}
         onOpenUpload={() => setIsUploadOpen(true)}
+        onOpenMealDb={() => setIsMealDbOpen(true)}
         onOpenPreferences={() => setIsPreferencesOpen(true)}
         onGeneratePlan={handleGeneratePlan}
         isGenerating={isGenerating}
@@ -257,6 +260,7 @@ export default function App() {
             onRemoveRecipe={handleRemoveRecipe}
             onReplaceRecipe={handleReplaceRecipe}
             onOpenUpload={() => setIsUploadOpen(true)}
+            onOpenMealDb={() => setIsMealDbOpen(true)}
             onGeneratePlan={handleGeneratePlan}
             isGenerating={isGenerating}
             onNavigateToCart={() => setActiveTab('cart')}
@@ -301,6 +305,12 @@ export default function App() {
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
         onAddParsedRecipe={handleAddParsedRecipe}
+      />
+
+      <MealDbExplorerModal
+        isOpen={isMealDbOpen}
+        onClose={() => setIsMealDbOpen(false)}
+        onImportRecipe={handleAddParsedRecipe}
       />
 
       <PreferencesModal

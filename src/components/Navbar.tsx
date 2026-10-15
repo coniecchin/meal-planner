@@ -6,6 +6,7 @@ interface NavbarProps {
   setActiveTab: (tab: 'planner' | 'cart' | 'pantry' | 'canvas') => void;
   cartItemCount: number;
   onOpenUpload: () => void;
+  onOpenMealDb: () => void;
   onOpenPreferences: () => void;
   onGeneratePlan: () => void;
   isGenerating: boolean;
@@ -16,6 +17,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   cartItemCount,
   onOpenUpload,
+  onOpenMealDb,
   onOpenPreferences,
   onGeneratePlan,
   isGenerating
@@ -45,7 +47,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Zone 2: Navigation Links (Clean text, single line) */}
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-neutral-600">
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-neutral-600">
             <button
               onClick={() => setActiveTab('planner')}
               className={`hover:text-neutral-900 transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
@@ -79,6 +81,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Archive className="w-4 h-4" />
               Pantry & Zero-Waste
+            </button>
+
+            <button
+              onClick={onOpenMealDb}
+              className="hover:text-neutral-900 transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5 text-neutral-700"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+              TheMealDB API
             </button>
 
             <button
@@ -140,6 +150,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`px-3 py-1.5 whitespace-nowrap ${activeTab === 'pantry' ? 'text-emerald-600 font-semibold' : ''}`}
           >
             Pantry
+          </button>
+          <button
+            onClick={onOpenMealDb}
+            className="px-3 py-1.5 whitespace-nowrap text-emerald-700 font-medium"
+          >
+            TheMealDB
           </button>
           <button
             onClick={onOpenUpload}

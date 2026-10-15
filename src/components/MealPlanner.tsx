@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Plus, Calendar, DollarSign, Users, Store, ArrowRight, ShieldCheck, Leaf } from 'lucide-react';
+import { Sparkles, Plus, Calendar, DollarSign, Users, Store, ArrowRight, ShieldCheck, Leaf, Globe } from 'lucide-react';
 import { Recipe, UserPreferences, GroceryPartner } from '../types';
 import { RecipeCard } from './RecipeCard';
 
@@ -11,6 +11,7 @@ interface MealPlannerProps {
   onRemoveRecipe: (id: string) => void;
   onReplaceRecipe: (id: string) => void;
   onOpenUpload: () => void;
+  onOpenMealDb: () => void;
   onGeneratePlan: () => void;
   isGenerating: boolean;
   onNavigateToCart: () => void;
@@ -26,6 +27,7 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({
   onRemoveRecipe,
   onReplaceRecipe,
   onOpenUpload,
+  onOpenMealDb,
   onGeneratePlan,
   isGenerating,
   onNavigateToCart,
@@ -63,7 +65,7 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({
             AI compiles your weekly recipes, checks your home pantry to prevent duplicate buying, and routes consolidated ingredients directly to {currentPartner.name}.
           </p>
 
-          <div className="mt-6 flex flex-wrap items-center gap-4">
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <button
               onClick={onGeneratePlan}
               disabled={isGenerating}
@@ -74,11 +76,19 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({
             </button>
 
             <button
+              onClick={onOpenMealDb}
+              className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-medium text-sm rounded-lg transition-colors flex items-center gap-2 border border-white/15"
+            >
+              <Globe className="w-4 h-4 text-emerald-400" />
+              Browse TheMealDB (Live API)
+            </button>
+
+            <button
               onClick={onOpenUpload}
               className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-medium text-sm rounded-lg transition-colors flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
-              Upload Custom Recipe
+              Upload Recipe
             </button>
           </div>
         </div>
@@ -199,13 +209,20 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onOpenMealDb}
+              className="px-3 py-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              <Globe className="w-3.5 h-3.5 text-emerald-600" />
+              TheMealDB API
+            </button>
             <button
               onClick={onOpenUpload}
               className="px-3 py-1.5 text-xs font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors flex items-center gap-1.5"
             >
               <Plus className="w-3.5 h-3.5" />
-              Add Recipe
+              Upload Recipe
             </button>
             <button
               onClick={onNavigateToCart}
