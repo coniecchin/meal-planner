@@ -634,6 +634,11 @@ app.get('/api/meals/detail/:id', async (req, res) => {
 });
 
 
+// Serve static image assets in both development and production
+app.use('/images', express.static(path.resolve(__dirname, 'public/images')));
+app.use('/src/assets/images', express.static(path.resolve(__dirname, 'src/assets/images')));
+app.use(express.static(path.resolve(__dirname, 'public')));
+
 // Start server with Vite middleware in dev or static files in prod
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {

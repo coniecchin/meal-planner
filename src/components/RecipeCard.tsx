@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Clock, Users, Flame, ChevronDown, ChevronUp, Trash2, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Clock, Users, Flame, ChevronDown, ChevronUp, Trash2, CheckCircle2, RefreshCw, ChefHat } from 'lucide-react';
 import { Recipe } from '../types';
+import { resolveImageUrl } from '../assets/images';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -17,23 +18,29 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<'ingredients' | 'steps'>('ingredients');
+  const [imageError, setImageError] = useState(false);
 
   const totalTime = recipe.prepTimeMins + recipe.cookTimeMins;
+  const imageUrl = resolveImageUrl(recipe.image);
 
   return (
     <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden flex flex-col hover:border-neutral-300 transition-all shadow-xs">
       {/* Card Header Media */}
       <div className="relative aspect-16/9 w-full bg-neutral-100 overflow-hidden group">
-        <img
-          src={recipe.image}
-          alt={recipe.title}
-          referrerPolicy="no-referrer"
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          onError={(e) => {
-            // CSS Fallback container when image fails
-            (e.currentTarget as HTMLElement).style.display = 'none';
-          }}
-        />
+        {!imageError ? (
+          <img
+            src={imageUrl}
+            alt={recipe.title}
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-900 flex flex-col items-center justify-center p-4 text-center">
+            <ChefHat className="w-8 h-8 text-emerald-400 mb-1 opacity-70" />
+            <span className="text-xs text-white/90 font-medium line-clamp-1">{recipe.title}</span>
+          </div>
+        )}
         {/* Overlay gradient scrim for contrast */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-between p-3.5 text-white">
           <div className="flex items-center justify-between">

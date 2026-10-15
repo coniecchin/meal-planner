@@ -1,4 +1,5 @@
 import { GroceryPartner, PantryItem, Recipe } from '../types';
+import { APP_IMAGES } from '../assets/images';
 
 export const GROCERY_PARTNERS: GroceryPartner[] = [
   {
@@ -91,7 +92,7 @@ export const INITIAL_RECIPES: Recipe[] = [
     servings: 2,
     cuisine: 'Healthy Fusion',
     dietaryTags: ['High Protein', 'Gluten-Free', 'Omega-3'],
-    image: '/src/assets/images/recipe_salmon_bowl_1792051827374.jpg',
+    image: APP_IMAGES.salmonBowl,
     nutritionPerServing: { calories: 540, protein: 38, carbs: 42, fat: 22 },
     ingredients: [
       { name: 'Fresh Atlantic Salmon Fillet', quantity: 300, unit: 'g', aisle: 'Meat & Seafood', estimatedPrice: 9.50 },
@@ -120,7 +121,7 @@ export const INITIAL_RECIPES: Recipe[] = [
     servings: 2,
     cuisine: 'Southeast Asian',
     dietaryTags: ['Vegetarian', 'Dairy-Free', 'Fuss-Free'],
-    image: '/src/assets/images/recipe_thai_curry_1792051828102.jpg',
+    image: APP_IMAGES.thaiCurry,
     nutritionPerServing: { calories: 480, protein: 18, carbs: 62, fat: 18 },
     ingredients: [
       { name: 'Coconut Milk (Kara or Ayam)', quantity: 400, unit: 'ml', aisle: 'Pantry & Condiments', estimatedPrice: 2.30 },
@@ -150,7 +151,7 @@ export const INITIAL_RECIPES: Recipe[] = [
     servings: 2,
     cuisine: 'Mediterranean',
     dietaryTags: ['Quick 20-min', 'Pescatarian'],
-    image: '/src/assets/images/hero_culinary_prep_1792051827185.jpg',
+    image: APP_IMAGES.hero,
     nutritionPerServing: { calories: 510, protein: 32, carbs: 58, fat: 16 },
     ingredients: [
       { name: 'Linguine Pasta', quantity: 200, unit: 'g', aisle: 'Pantry & Grains', estimatedPrice: 1.80 },

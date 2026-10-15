@@ -2,6 +2,7 @@ import React from 'react';
 import { Sparkles, Plus, Calendar, DollarSign, Users, Store, ArrowRight, ShieldCheck, Leaf, Globe } from 'lucide-react';
 import { Recipe, UserPreferences, GroceryPartner } from '../types';
 import { RecipeCard } from './RecipeCard';
+import { APP_IMAGES } from '../assets/images';
 
 interface MealPlannerProps {
   recipes: Recipe[];
@@ -46,7 +47,7 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({
       <div className="relative rounded-2xl overflow-hidden bg-neutral-900 text-white shadow-md">
         <div className="absolute inset-0 opacity-25">
           <img
-            src="/src/assets/images/hero_culinary_prep_1792051827185.jpg"
+            src={APP_IMAGES.hero}
             alt="PrepCart Kitchen"
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover"
