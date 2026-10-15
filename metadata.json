@@ -1,0 +1,6 @@
+{
+  "name": "Mise - Weekly Meal Planner & Smart Grocery Cart",
+  "description": "Smart weekly meal planning tailored to your household pax, dietary preferences, and budget with automated ingredient consolidation and grocer ordering.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
