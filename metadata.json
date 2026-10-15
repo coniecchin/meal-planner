@@ -1,0 +1,7 @@
+{
+  "name": "PrepCart AI - Meal Planner & Grocer Cart Automation",
+  "description": "AI-powered weekly meal planning, recipe ingredient aggregation, pantry waste deduction, and automated cart dispatch to RedMart, GrabMart, Amazon Fresh, and FairPrice.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
