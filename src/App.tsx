@@ -8,6 +8,7 @@ import { RecipeUploadModal } from './components/RecipeUploadModal';
 import { PreferencesModal } from './components/PreferencesModal';
 import { PartnerCheckoutModal } from './components/PartnerCheckoutModal';
 import { MealDbExplorerModal } from './components/MealDbExplorerModal';
+import { TalkToUs } from './components/TalkToUs';
 import { GROCERY_PARTNERS, INITIAL_PANTRY, INITIAL_RECIPES } from './data/initialData';
 import { Recipe, PantryItem, UserPreferences, ConsolidatedCartItem } from './types';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
@@ -15,7 +16,7 @@ import { CheckCircle2, AlertCircle } from 'lucide-react';
 export default function App() {
   const [recipes, setRecipes] = useState<Recipe[]>(INITIAL_RECIPES);
   const [pantryItems, setPantryItems] = useState<PantryItem[]>(INITIAL_PANTRY);
-  const [activeTab, setActiveTab] = useState<'planner' | 'cart' | 'pantry' | 'canvas'>('planner');
+  const [activeTab, setActiveTab] = useState<'planner' | 'cart' | 'pantry' | 'canvas' | 'talk-to-us'>('planner');
 
   const [preferences, setPreferences] = useState<UserPreferences>({
     pax: 2,
@@ -298,6 +299,10 @@ export default function App() {
             onSwitchToPlanner={() => setActiveTab('planner')}
           />
         )}
+
+        {activeTab === 'talk-to-us' && (
+          <TalkToUs />
+        )}
       </main>
 
       {/* Modals */}
@@ -355,6 +360,9 @@ export default function App() {
             </button>
             <button onClick={() => setActiveTab('canvas')} className="hover:text-neutral-900 transition-colors">
               Canvas Specs
+            </button>
+            <button onClick={() => setActiveTab('talk-to-us')} className="hover:text-neutral-900 transition-colors">
+              Talk to Us
             </button>
           </div>
         </div>

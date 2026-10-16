@@ -1,9 +1,9 @@
 import React from 'react';
-import { ShoppingBag, Sparkles, ChefHat, Archive, FileText, Settings, ShoppingCart } from 'lucide-react';
+import { ShoppingBag, Sparkles, ChefHat, Archive, FileText, Settings, ShoppingCart, MessageSquare } from 'lucide-react';
 
 interface NavbarProps {
-  activeTab: 'planner' | 'cart' | 'pantry' | 'canvas';
-  setActiveTab: (tab: 'planner' | 'cart' | 'pantry' | 'canvas') => void;
+  activeTab: 'planner' | 'cart' | 'pantry' | 'canvas' | 'talk-to-us';
+  setActiveTab: (tab: 'planner' | 'cart' | 'pantry' | 'canvas' | 'talk-to-us') => void;
   cartItemCount: number;
   onOpenUpload: () => void;
   onOpenMealDb: () => void;
@@ -108,6 +108,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               <ShoppingBag className="w-4 h-4" />
               Canvas Specs
             </button>
+
+            <button
+              onClick={() => setActiveTab('talk-to-us')}
+              className={`hover:text-neutral-900 transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
+                activeTab === 'talk-to-us' ? 'text-emerald-600 font-semibold' : ''
+              }`}
+            >
+              <MessageSquare className="w-4 h-4" />
+              Talk to Us
+            </button>
           </nav>
 
           {/* Zone 3: Primary Action */}
@@ -168,6 +178,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`px-3 py-1.5 whitespace-nowrap ${activeTab === 'canvas' ? 'text-emerald-600 font-semibold' : ''}`}
           >
             Canvas
+          </button>
+          <button
+            onClick={() => setActiveTab('talk-to-us')}
+            className={`px-3 py-1.5 whitespace-nowrap ${activeTab === 'talk-to-us' ? 'text-emerald-600 font-semibold' : ''}`}
+          >
+            Talk to Us
           </button>
         </div>
       </div>
